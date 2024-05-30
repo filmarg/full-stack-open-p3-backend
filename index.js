@@ -55,6 +55,18 @@ const generateId = () => Math.floor(Math.random() * 10000)
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
+  const duplicate = persons.some(p => p.name === body.name)
+  
+  const sendError = (message) =>
+        res.status(400).json({ error: message })
+  
+  if (!body.name) {
+    return sendError('"name" must not be empty')
+  } else if (!body.number) {
+    return sendError('"number" must not be empty')
+  } else if (duplicate) {
+    return sendError('"name" must be unique')
+  }
 
   const newPerson = {
     id: generateId(),

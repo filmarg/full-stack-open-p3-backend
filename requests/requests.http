@@ -20,3 +20,21 @@ Content-Type: application/json
     "name": "Abraham Lincoln",
     "number": "12345-67890"
 }
+
+# Ex. 3.6: Post an entry with 'name' missing
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "number": "12345-67890"
+}
+
+# Ex. 3.6: Post an entry with 'number' missing
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Abraham Lincoln"
+}
