@@ -26,12 +26,14 @@ let persons = [
   }
 ]
 
+//========== API
+
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id     = +req.params.id
+  const id = +req.params.id
   const person = persons.find(p => p.id === id)
 
   if (!person) {
@@ -65,13 +67,17 @@ app.post('/api/persons', (req, res) => {
   res.json(newPerson)
 })
 
+//========== Info
+
 app.get('/info', (req, res) => {
   const number = `Phonebook has info for ${persons.length} people.`
-  const time   = new Date().toString()
-  const info   = `<p>${number}</p><p>${time}</p>`
+  const time = new Date().toString()
+  const info = `<p>${number}</p><p>${time}</p>`
   
   res.send(info)
 })
+
+//========== Run server
 
 const PORT = 3001
 app.listen(PORT, () => {
