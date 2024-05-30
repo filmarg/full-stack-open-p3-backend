@@ -10,3 +10,13 @@ DELETE http://localhost:3001/api/persons/2
 # Ex. 3.4: Delete a non-existent entry
 
 DELETE http://localhost:3001/api/persons/100
+
+# Ex. 3.5: Post a new entry
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Abraham Lincoln",
+    "number": "12345-67890"
+}
