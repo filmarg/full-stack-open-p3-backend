@@ -39,11 +39,11 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
-const generateId = () => Math.floor(Math.random() * 10000)
-
 app.post('/api/persons', (req, res) => {
   const body = req.body
-  const duplicate = persons.some(p => p.name === body.name)
+  
+  // TODO: To delete, in ex. 3.17.
+  // const duplicate = persons.some(p => p.name === body.name)
   
   const sendError = (message) =>
         res.status(400).json({ error: message })
@@ -52,19 +52,20 @@ app.post('/api/persons', (req, res) => {
     return sendError('"name" must not be empty')
   } else if (!body.number) {
     return sendError('"number" must not be empty')
-  } else if (duplicate) {
-    return sendError('"name" must be unique')
   }
+  // } else if (duplicate) {
+  //   return sendError('"name" must be unique')
+  // }
 
-  const newPerson = {
-    id: generateId(),
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
-  }
+  })
 
-  persons = persons.concat(newPerson)
-
-  res.json(newPerson)
+  newPerson.save()
+    .then(savedPerson => {
+      res.json(newPerson)
+    })  
 })
 
 //========== Info
