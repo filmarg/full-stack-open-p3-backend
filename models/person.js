@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
+// Connect
+
 const url = process.env.MONGODB_URI
 console.log('Connecting to', url)
 mongoose.connect(url)
@@ -12,11 +14,14 @@ mongoose.connect(url)
     console.log('Error connecting to MongoDB:', err.message)
   })
 
+// Make a model
+
 const personSchema = new mongoose.Schema({
   name: String,
   number: String,
 })
 
+// Alter the model for it to suit our needs
 personSchema.set('toJSON', {
   transform: (document, returnedObj) => {
     returnedObj.id = returnedObj._id.toString()
