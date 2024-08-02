@@ -13,11 +13,12 @@ app.use(express.json())
 
 //========== API
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
   Person.find({})
     .then(persons => {
       res.json(persons)
     })
+    .catch(err => next(err))
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -31,16 +32,17 @@ app.get('/api/persons/:id', (req, res) => {
   }
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   // const id = +req.params.id
 
   Person.findByIdAndDelete(req.params.id)
     .then(person => {
       res.status(204).end()
     })
+    .catch(err => next(err))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
   
   // TODO: To delete, in ex. 3.17.
@@ -67,6 +69,7 @@ app.post('/api/persons', (req, res) => {
     .then(savedPerson => {
       res.json(newPerson)
     })  
+    .catch(err => next(err))
 })
 
 //========== Info
@@ -77,6 +80,20 @@ app.get('/info', (req, res) => {
   const info = `<p>${number}</p><p>${time}</p>`
   
   res.send(info)
+})
+
+//========== Error handling
+
+app.use((err, req, res, next) => {
+  console.error(err.message)
+
+  if (err.name === 'CastError') {
+    // Invalid object ID for Mongo
+    res.status(400).send({ error: 'malformatted id' })
+  } else {
+    // The default Express error handler
+    next(err)
+  }
 })
 
 //========== Run server
