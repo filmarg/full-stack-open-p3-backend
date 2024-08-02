@@ -38,3 +38,13 @@ Content-Type: application/json
 {
     "name": "Abraham Lincoln"
 }
+
+# Ex. 3.17: Put a new number for an existing person
+
+PUT http://localhost:3001/api/persons/66ab7b89dcc1e8f32af3bd5d
+Content-Type: application/json
+
+{
+    "name": "Frontend Person",
+    "number": "999-999-999"
+}
