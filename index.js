@@ -21,15 +21,16 @@ app.get('/api/persons', (req, res, next) => {
     .catch(err => next(err))
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = +req.params.id
-  const person = persons.find(p => p.id === id)
-
-  if (!person) {
-    res.status(404).end()
-  } else {
-    res.json(person)
-  }
+app.get('/api/persons/:id', (req, res, next) => {
+  Person.findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(err => next(err))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -89,12 +90,16 @@ app.post('/api/persons', (req, res, next) => {
 
 //========== Info
 
-app.get('/info', (req, res) => {
-  const number = `Phonebook has info for ${persons.length} people.`
-  const time = new Date().toString()
-  const info = `<p>${number}</p><p>${time}</p>`
+app.get('/info', (req, res, next) => {
+  Person.countDocuments({})
+    .then(count => {
+      const number = `Phonebook has info for ${count} people.`
+      const time = new Date().toString()
+      const info = `<p>${number}</p><p>${time}</p>`
   
-  res.send(info)
+      res.send(info)
+    })
+    .catch(err => next(err))
 })
 
 //========== Error handling
