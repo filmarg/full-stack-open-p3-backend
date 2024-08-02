@@ -34,8 +34,6 @@ app.get('/api/persons/:id', (req, res, next) => {
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-  // const id = +req.params.id
-
   Person.findByIdAndDelete(req.params.id)
     .then(person => {
       res.status(204).end()
@@ -61,7 +59,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
   
-  // TODO: To delete, in ex. 3.17.
+  // NOTE: Checking for duplicates deleted in ex. 3.17.
   // const duplicate = persons.some(p => p.name === body.name)
   
   const sendError = (message) =>
@@ -76,14 +74,14 @@ app.post('/api/persons', (req, res, next) => {
   //   return sendError('"name" must be unique')
   // }
 
-  const newPerson = new Person({
+  const person = new Person({
     name: body.name,
     number: body.number,
   })
 
-  newPerson.save()
+  person.save()
     .then(savedPerson => {
-      res.json(newPerson)
+      res.json(savedPerson)
     })  
     .catch(err => next(err))
 })
