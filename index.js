@@ -42,12 +42,9 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-  const body = req.body
+  const { name, number } = req.body
   
-  const person = {
-    name: body.name,
-    number: body.number,
-  }
+  const person = { name, number }
   const opts = { new: true, runValidators: true, context: 'query' }
 
   Person.findByIdAndUpdate(req.params.id, person, opts)
@@ -58,7 +55,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 })
 
 app.post('/api/persons', (req, res, next) => {
-  const body = req.body
+  const { name, number } = req.body
   
   // NOTE: Checking for duplicates deleted in ex. 3.17.
   // const duplicate = persons.some(p => p.name === body.name)
@@ -66,19 +63,16 @@ app.post('/api/persons', (req, res, next) => {
   const sendError = (message) =>
         res.status(400).json({ error: message })
   
-  if (!body.name) {
+  if (!name) {
     return sendError('"name" must not be empty')
-  } else if (!body.number) {
+  } else if (!number) {
     return sendError('"number" must not be empty')
   }
   // } else if (duplicate) {
   //   return sendError('"name" must be unique')
   // }
 
-  const person = new Person({
-    name: body.name,
-    number: body.number,
-  })
+  const person = new Person({ name, number })
 
   person.save()
     .then(savedPerson => {
