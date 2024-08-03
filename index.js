@@ -57,19 +57,10 @@ app.put('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const { name, number } = req.body
   
-  // NOTE: Checking for duplicates deleted in ex. 3.17.
+  // NOTE: Checking for duplicates deleted in ex. 3.14 & 3.17.
   // const duplicate = persons.some(p => p.name === body.name)
-  
-  const sendError = (message) =>
-        res.status(400).json({ error: message })
-  
-  if (!name) {
-    return sendError('"name" must not be empty')
-  } else if (!number) {
-    return sendError('"number" must not be empty')
-  }
-  // } else if (duplicate) {
-  //   return sendError('"name" must be unique')
+  // if (duplicate) {
+  //   return res.status(400).json({ error: '"name" must be unique' })
   // }
 
   const person = new Person({ name, number })
@@ -98,14 +89,16 @@ app.get('/info', (req, res, next) => {
 //========== Error handling
 
 app.use((err, req, res, next) => {
-  console.error(err.message)
+  console.error(err)
 
   if (err.name === 'CastError') {
     // Invalid object ID for Mongo
     res.status(400).send({ error: 'malformatted id' })
   } else if (err.name === 'ValidationError') {
     // Schema constraint violation for Mongo
-    res.status(400).send({ error: err.message })
+    const message = Object.values(err.errors)
+          .reduce((acc, e) => acc.concat(e.message, ' | '), '')
+    res.status(400).send({ error: message })
   } else {
     // The default Express error handler
     next(err)
