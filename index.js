@@ -48,8 +48,9 @@ app.put('/api/persons/:id', (req, res, next) => {
     name: body.name,
     number: body.number,
   }
-  
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  const opts = { new: true, runValidators: true, context: 'query' }
+
+  Person.findByIdAndUpdate(req.params.id, person, opts)
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
@@ -108,6 +109,9 @@ app.use((err, req, res, next) => {
   if (err.name === 'CastError') {
     // Invalid object ID for Mongo
     res.status(400).send({ error: 'malformatted id' })
+  } else if (err.name === 'ValidationError') {
+    // Schema constraint violation for Mongo
+    res.status(400).send({ error: err.message })
   } else {
     // The default Express error handler
     next(err)
