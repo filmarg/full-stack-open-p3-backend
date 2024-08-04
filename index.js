@@ -35,7 +35,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
-    .then(person => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(err => next(err))
@@ -43,7 +43,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 app.put('/api/persons/:id', (req, res, next) => {
   const { name, number } = req.body
-  
+
   const person = { name, number }
   const opts = { new: true, runValidators: true, context: 'query' }
 
@@ -56,7 +56,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 
 app.post('/api/persons', (req, res, next) => {
   const { name, number } = req.body
-  
+
   // NOTE: Checking for duplicates deleted in ex. 3.14 & 3.17.
   // const duplicate = persons.some(p => p.name === body.name)
   // if (duplicate) {
@@ -68,7 +68,7 @@ app.post('/api/persons', (req, res, next) => {
   person.save()
     .then(savedPerson => {
       res.json(savedPerson)
-    })  
+    })
     .catch(err => next(err))
 })
 
@@ -80,7 +80,7 @@ app.get('/info', (req, res, next) => {
       const number = `Phonebook has info for ${count} people.`
       const time = new Date().toString()
       const info = `<p>${number}</p><p>${time}</p>`
-  
+
       res.send(info)
     })
     .catch(err => next(err))
@@ -97,7 +97,7 @@ app.use((err, req, res, next) => {
   } else if (err.name === 'ValidationError') {
     // Schema constraint violation for Mongo
     const message = Object.values(err.errors)
-          .reduce((acc, e) => acc.concat(e.message, ' | '), '')
+      .reduce((acc, e) => acc.concat(e.message, ' | '), '')
     res.status(400).send({ error: message })
   } else {
     // The default Express error handler
